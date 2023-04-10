@@ -47,6 +47,34 @@ double LineControl::cross_track_err_circle()
     return  e;
 }
 
+double LineControl::cross_track_err_figure()
+{
+	double dx;
+	double dy;
+	double e;
+	if(x<-cx)
+	{
+		dx = -cx - x;
+    		dy =  y;
+    		e = sqrt(dx*dx + dy*dy) - R;
+	}
+	else if(x>cx)
+	{
+		dx = cx - x;
+    		dy =  y;
+    		e = sqrt(dx*dx + dy*dy) - R;
+	}
+	else if(y>0)
+	{
+		e = -R + y; 
+	}
+	else
+	{
+		e = -R - y;
+	}
+    	return  e;
+}
+
 void LineControl::publish_error(double e)
 {
     std_msgs::Float64 err;
@@ -66,7 +94,7 @@ void LineControl::timerCallback(const ros::TimerEvent&)
     if ( !obstacle )
     {
         //  вычислим текущую ошибку управления
-        double err = cross_track_err_line();
+        double err = cross_track_err_figure();
         //  публикация текущей ошибки
         publish_error(err);
         //  интегрируем ошибку
@@ -93,7 +121,7 @@ LineControl::LineControl():
     ROS_INFO_STREAM("LineControl initialisation");
     //  читаем параметры
     line_y = node.param("line_y", -10.0);
-    cx = node.param("cx", -6);
+    cx = node.param("cx", 6);
     cy = node.param("cy", 0);
     R = node.param("R", 6);
     task_vel = node.param("task_vel", 1.0);

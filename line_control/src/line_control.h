@@ -14,6 +14,7 @@ private:
     double cross_track_err_line();
     //функция вычисления ошибки управления для движения вдоль окружности
     double cross_track_err_circle();
+    double cross_track_err_figure();
     /**
      * Функция, которая будет вызвана
      * при получении данных от лазерного дальномера
